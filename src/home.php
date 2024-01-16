@@ -1,4 +1,5 @@
 <?php require 'db-connect.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,40 +8,35 @@
     <title>ホーム</title>
 </head>
 <body>
-<form method="post">
-    <!-- ボタンの作成 -->
-    <button type="submit" name="home">ホーム</button>
-    <button type="submit" name="registration">登録</button><br>
-    
     <?php
-try {
-    // データベースに接続
-    $pdo = new PDO($connect, USER, PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
+        // データベースに接続
+        $pdo = new PDO($connect, USER, PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // IDが2の画像のパスと名前をデータベースから取得
-    $stmt = $pdo->prepare("SELECT image_path, name FROM music WHERE id = ?");
-    $imageId = 2; // ここを指定のIDに変更
-    $stmt->bindParam(1, $imageId);
-    $stmt->execute();
+        // IDが2から始まる5つの画像の情報をデータベースから取得
+        $stmt = $pdo->prepare("SELECT id, image_path, name FROM music WHERE id >= ? LIMIT 5");
+        $startingId = 2; // 開始のID
+        $stmt->bindParam(1, $startingId);
+        $stmt->execute();
 
-    $imageData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $imageData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($imageData) {
-        $imagePath = $imageData['image_path'];
-        $imageName = $imageData['name'];
+        foreach ($imageData as $data) {
+            $id = $data['id'];
+            $imagePath = $data['image_path'];
+            $imageName = $data['name'];
 
-        echo "<a href='detail.php'><img src='$imagePath' alt='$imageName'></a>";
-        echo "<p>曲名: $imageName</p>";
-    } else {
-        echo "指定されたIDの画像が見つかりませんでした。";
+            // 各画像に対するリンク
+            echo "<a href='detail.php?id=$id'>";
+            echo "<img src='$imagePath' alt='$imageName'>";
+            echo "</a>";
+            echo "<p>曲名: $imageName</p>";
+            echo "<hr>"; // 各データの区切り線
+        }
+    } catch (PDOException $e) {
+        echo "エラー: " . $e->getMessage();
     }
-} catch (PDOException $e) {
-    echo "エラー: " . $e->getMessage();
-}
-?>
-
-
-</form>
+    ?>
 </body>
 </html>
