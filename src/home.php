@@ -8,6 +8,12 @@
     <title>ホーム</title>
 </head>
 <body>
+<header>
+    <nav>
+        <a href="home.php">ホーム</a>
+        <a href="registration.php">新規登録</a>
+    </nav>
+</header>
     <?php
     try {
         // データベースに接続
@@ -15,7 +21,7 @@
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // IDが2から始まる5つの画像の情報をデータベースから取得
-        $stmt = $pdo->prepare("SELECT id, image_path, name FROM music WHERE id >= ? LIMIT 5");
+        $stmt = $pdo->prepare("SELECT id, image_path, name FROM music WHERE id >= ? ");
         $startingId = 2; // 開始のID
         $stmt->bindParam(1, $startingId);
         $stmt->execute();

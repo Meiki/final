@@ -8,6 +8,12 @@
     <title>詳細</title>
 </head>
 <body>
+<header>
+    <nav>
+        <a href="home.php">ホーム</a>
+        <a href="registration.php">新規登録</a>
+    </nav>
+</header>
     <?php
     try {
         // idがGETパラメータとして渡されたか確認
@@ -40,6 +46,12 @@
                 echo "<p>カテゴリ: {$imageData['category_name']}</p>";
                 echo "<p>リリース日: {$imageData['release_date']}</p>";
                 echo "<p>歌詞: {$imageData['lyrics']}</p>";
+
+                // 編集ボタンを表示
+                echo "<form method='get' action='edit.php'>";
+                echo "<input type='hidden' name='id' value='{$id}'>";
+                echo "<button type='submit' name='edit'>編集</button>";
+                echo "</form>";
 
                 // 削除ボタンを表示
                 echo "<form method='post'>";
